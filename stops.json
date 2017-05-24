@@ -180,7 +180,7 @@
     "Sections": {
         "Section_1": {
             "id": 1,
-            "name": "Alpah",
+            "name": "Alpha",
             "prev": "Main Entrance",
             "next": "Lower Campus",
             "direction": 0,

@@ -18,6 +18,18 @@ class timeline:
                 self.timetable.update({second: t})
                 second += 19 * 60
 
+    def insert(self, second, duration, direction):
+        prevtime = 0
+        for time, timeslot in self.timetable.items():
+            if time > second:
+                if "CCW" in direction:
+                    self.timetable[prevtime].addCCW(duration)
+                    break
+                else:
+                    self.timetable[prevtime].addCW(duration)
+                    break
+            prevtime = time
+
 class timeslot:
     def __init__(self): # CW = 1 CCW = 2
         self.CW = []
