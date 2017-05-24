@@ -27,10 +27,6 @@ class Location:
     def getTime(self):
         return self.time
 
-    def printString(self):
-        print(self.location, self.status, self.time)
-
-
 class Bus:
     CW = 1
     CCW = 2
@@ -60,6 +56,8 @@ class Bus:
             log = Location(location, status, time, direction)
             self.locations.append(log)
 
+    # CW = 1
+    # CCW = 2
     def checkDirection(self):
         if len(self.locations) > 1:
             MRT = self.locations[len(self.locations) - 1].getLocationId()
