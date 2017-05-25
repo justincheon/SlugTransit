@@ -46,7 +46,6 @@ class timeline:
             self.timetable[time].addCCW(duration)
             return 1
         return 0
-            
 
     def current(self, direction):
         prevtime = 0
@@ -77,7 +76,7 @@ class timeslot:
 
     def __str__(self):
         return "{:06.2f} {:06.2f}".format(self.getAverage_CW(),
-                                      self.getAverage_CCW())
+                                          self.getAverage_CCW())
 
     def addCW(self, value):
         self.CW.append(value)

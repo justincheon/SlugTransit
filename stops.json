@@ -25,7 +25,7 @@
             "west_bound": -122.055235,
             "east_bound": -122.054269},
         "East_Remote_Lot": {
-            "id": 13,
+            "id": 14,
             "name": "East Remote Parking",
             "direction": 0,
             "north_bound": 36.991541,  
@@ -169,7 +169,7 @@
             "west_bound": -122.054479,
             "east_bound": -122.054087},
         "Home": {
-            "id": 4,
+            "id": 999,
             "name": "Parking Lot",
             "direction": 0,
             "north_bound": 36.980366,  

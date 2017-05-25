@@ -1,11 +1,12 @@
 import json
-from datetime import datetime
+import datetime
 
 with open("stops.json", encoding="utf-8") as stops_info:
     json = json.loads(stops_info.read())
 
 all = json["Stops"]
 all.update(json["Sections"])
+
 
 class Location:
     def __init__(self, location, status, time, direction):
@@ -15,7 +16,8 @@ class Location:
         self.direction = direction
 
     def __str__(self):
-        return "{0} {1} {2} {3}".format(self.location, self.status, self.time, self.direction)
+        return "{0} {1} {2} {3}".format(self.location, self.status, self.time,
+                                        self.direction)
 
     def getLocation(self):
         return self.location
@@ -29,9 +31,11 @@ class Location:
     def getTime(self):
         return self.time
 
+
 class Bus:
     CW = 1
     CCW = 2
+
     def __init__(self, id):
         self.id = id
         self.locations = []
@@ -55,7 +59,7 @@ class Bus:
     def getLocationLog(self):
         return self.locations
 
-    def addLog(self, location, status = None, time = None, direction = None):
+    def addLog(self, location, status=None, time=None, direction=None):
         if (status == None):
             self.locations.append(location)
         else:
@@ -66,8 +70,10 @@ class Bus:
     # CCW = 2
     def checkDirection(self):
         if len(self.locations) > 1:
-            most_recent_location = self.locations[len(self.locations) - 1].getLocationId()
-            second_most_recent_location = self.locations[len(self.locations) - 2].getLocationId()
+            most_recent_location = self.locations[len(self.locations) -
+                                                  1].getLocationId()
+            second_most_recent_location = self.locations[len(self.locations) -
+                                                         2].getLocationId()
             if most_recent_location == 64 and second_most_recent_location == 1:
                 self.direction = 1
             elif most_recent_location == 1 and second_most_recent_location == 64:
@@ -81,10 +87,14 @@ class Bus:
 
     def getDuration(self):
         if len(self.locations) > 1:
-            most_recent_time = self.locations[len(self.locations) - 1].getTime()
-            second_most_recent_time = self.locations[len(self.locations) - 2].getTime()
-            most_recent_time_num = datetime.strptime(most_recent_time, "%H:%M:%S")
-            second_most_recent_time_num = datetime.strptime(second_most_recent_time, "%H:%M:%S")
+            most_recent_time = self.locations[len(self.locations) -
+                                              1].getTime()
+            second_most_recent_time = self.locations[len(self.locations) -
+                                                     2].getTime()
+            most_recent_time_num = datetime.strptime(most_recent_time,
+                                                     "%H:%M:%S")
+            second_most_recent_time_num = datetime.strptime(
+                second_most_recent_time, "%H:%M:%S")
             return (most_recent_time_num - second_most_recent_time_num).seconds
         return -1
 
@@ -95,4 +105,4 @@ class Bus:
 
     def printLogs(self):
         for location in self.locations:
-            print(location, end = "")
+            print(location, end="")
