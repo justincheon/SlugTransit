@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 with open("stops.json", encoding="utf-8") as stops_info:
     json = json.loads(stops_info.read())
 
@@ -46,6 +48,10 @@ class Bus:
             return self.locations[len(self.locations) - 1].getLocation()
         return ""
 
+    def getMostRecentLocationObj(self):
+        if len(self.locations) != 0:
+            return self.locations[len(self.locations) - 1]
+
     def getLocationLog(self):
         return self.locations
 
@@ -60,19 +66,32 @@ class Bus:
     # CCW = 2
     def checkDirection(self):
         if len(self.locations) > 1:
-            MRT = self.locations[len(self.locations) - 1].getLocationId()
-            SMRT = self.locations[len(self.locations) - 2].getLocationId()
-            if MRT - SMRT > 0:
+            most_recent_location = self.locations[len(self.locations) - 1].getLocationId()
+            second_most_recent_location = self.locations[len(self.locations) - 2].getLocationId()
+            if most_recent_location == 64 and second_most_recent_location == 1:
+                self.direction = 1
+            elif most_recent_location == 1 and second_most_recent_location == 64:
                 self.direction = 2
-            elif MRT - SMRT < 0:
+            elif most_recent_location - second_most_recent_location > 0:
+                self.direction = 2
+            elif most_recent_location - second_most_recent_location < 0:
                 self.direction = 1
             else:
                 pass
 
+    def getDuration(self):
+        if len(self.locations) > 1:
+            most_recent_time = self.locations[len(self.locations) - 1].getTime()
+            second_most_recent_time = self.locations[len(self.locations) - 2].getTime()
+            most_recent_time_num = datetime.strptime(most_recent_time, "%H:%M:%S")
+            second_most_recent_time_num = datetime.strptime(second_most_recent_time, "%H:%M:%S")
+            return (most_recent_time_num - second_most_recent_time_num).seconds
+        return -1
+
     def printReport(self):
         print("Bus ID " + str(self.id))
         for location in self.locations:
-            print(location, end = "")
+            print(location)
 
     def printLogs(self):
         for location in self.locations:

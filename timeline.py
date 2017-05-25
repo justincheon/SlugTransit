@@ -5,38 +5,68 @@ class timeline:
     def __init__(self):
         self.timetable = {}
 
+    # 1 = MWF
+    # 2 = TuTh
+    # 3 = Weekend
     def setMode(self, mode):
-        if "MWF" in mode:
+        if mode == 1:
             second = 7 * 60 * 60 + 21 * 60  # 7:21 AM
             while second < 86400:
                 t = timeslot()
                 self.timetable.update({second: t})
                 second += 13 * 60
-        elif "TuTh" in mode:
+        elif mode == 2:
             second = 7 * 60 * 60 + 22 * 60  # 7:22 AM
             while second < 86400:
                 t = timeslot()
                 self.timetable.update({second: t})
                 second += 19 * 60
+        elif mode == 3:
+            second = 0
+            while second < 86400:
+                t = timeslot()
+                self.timetable.update({second: t})
+                second += 15 * 60
 
     def insert(self, second, duration, direction):
         prevtime = 0
         for time, timeslot in self.timetable.items():
             if time > second:
-                if "CCW" in direction:
-                    self.timetable[prevtime].addCCW(duration)
-                    break
-                else:
+                if direction == 1:
                     self.timetable[prevtime].addCW(duration)
-                    break
+                    return 1
+                else:
+                    self.timetable[prevtime].addCCW(duration)
+                    return 1
             prevtime = time
+        if direction == 1:
+            self.timetable[time].addCW(duration)
+            return 1
+        else:
+            self.timetable[time].addCCW(duration)
+            return 1
+        return 0
+            
+
+    def current(self, direction):
+        prevtime = 0
+        now = datetime.datetime.now()
+        now_in_seconds = now.hour * 60 * 60 + now.minute * 60 + now.second
+        for time, timeslot in self.timetable.items():
+            if time > now_in_seconds:
+                if direction == 1:
+                    return self.timetable[prevtime].getAverage_CW()
+                else:
+                    return self.timetable[prevtime].getAverage_CCW()
+            prevtime = time
+        return 0
 
     def __str__(self):
-        str1 = "{:5} {:6} {:6}\n".format("Time", "CW", "CCW")
+        str1 = "{:5} {:6} {:6}".format("Time", "CW(s)", "CCW(s)")
         for time, timeslot in self.timetable.items():
             m, s = divmod(time, 60)
             h, m = divmod(m, 60)
-            str1 += "{:02d}:{:02d} {}\n".format(h, m, timeslot)
+            str1 += "\n{:02d}:{:02d} {}".format(h, m, timeslot)
         return str1
 
 
@@ -64,8 +94,3 @@ class timeslot:
         if len(self.CCW) == 0:
             return 0
         return sum(self.CCW) / len(self.CCW)
-
-
-tl = timeline()
-tl.setMode("MWF")
-print(tl)

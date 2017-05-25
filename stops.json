@@ -169,7 +169,7 @@
             "west_bound": -122.054479,
             "east_bound": -122.054087},
         "Home": {
-            "id": 1,
+            "id": 4,
             "name": "Parking Lot",
             "direction": 0,
             "north_bound": 36.980366,  
