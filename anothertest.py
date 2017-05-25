@@ -37,22 +37,22 @@ while True:
                 if id not in buses:
                     new = bus.Bus(id)
                     buses.update({id: new})
-                if location != buses[id].getMostRecentLocation().getLocation():
+                if location != buses[id].getMostRecentLocation():
                     check = True
                 else:
                     check = False
                 buses[id].addLog(location, type,
-                                 datetime.datetime.now().strftime("%H:%M:%S"))
+                                 datetime.datetime.now().strftime("%H:%M:%S"),buses[id].getDirection())
                 if check:
                     buses[id].checkDirection()
-                out = "{} {} {}".format(id, buses[id].getMostRecentLocation(),
-                                        str(buses[id].getDirection()))
+                out = "{} {}".format(id, buses[id].getMostRecentLocationObj())
                 log.write(out)
                 log.write("\n")
                 print(out)
         log.closed
-    except:
+    except Exception as e:
+        print(e)
         print("Network Error")
         pass
 
-    time.sleep(15)
+    time.sleep(8)
