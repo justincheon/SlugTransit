@@ -10,13 +10,15 @@ class timeline:
     # 3 = Weekend
     def setMode(self, mode):
         if mode == 1:
-            second = 7 * 60 * 60 + 21 * 60  # 7:21 AM
+            second = 12 * 60  # 0:12 AM
+            self.timetable.update({0: timeslot()})
             while second < 86400:
                 t = timeslot()
                 self.timetable.update({second: t})
                 second += 13 * 60
         elif mode == 2:
-            second = 7 * 60 * 60 + 22 * 60  # 7:22 AM
+            second = 4 * 60  # 0:05 AM
+            self.timetable.update({0: timeslot()})
             while second < 86400:
                 t = timeslot()
                 self.timetable.update({second: t})
@@ -58,7 +60,18 @@ class timeline:
                 else:
                     return self.timetable[prevtime].getAverage_CCW()
             prevtime = time
-        return 0
+        return -1
+
+    def count(self, second, direction):
+        prevtime = 0
+        for time, timeslot in self.timetable.items():
+            if time > second:
+                if direction == 1:
+                    return self.timetable[prevtime].getAverage_CW()
+                else:
+                    return self.timetable[prevtime].getAverage_CCW()
+            prevtime = time
+        return -1
 
     def __str__(self):
         str1 = "{:5} {:6} {:6}".format("Time", "CW(s)", "CCW(s)")
