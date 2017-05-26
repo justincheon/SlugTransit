@@ -31,6 +31,9 @@ class Location:
     def getTime(self):
         return self.time
 
+    def getDirection(self):
+        return self.direction
+
 
 class Bus:
     CW = 1
