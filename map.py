@@ -2,6 +2,17 @@ import timeline
 import bus
 import datetime
 
+stops_1 = [
+    5,
+    9,
+    13,
+    14,
+    18,
+    25,
+    30,
+    33,
+]
+
 
 class Map:
     def __init__(self, mode):
@@ -16,7 +27,7 @@ class Map:
         # info about two locations
         start = location_A.getLocationId()
         end = location_B.getLocationId()
-        location_difference = abs(start-end)
+        location_difference = abs(start - end)
         if location_difference > 60:
             location_difference = abs(64 - location_difference)
         # find duration
@@ -29,7 +40,7 @@ class Map:
         if duration > 8 * 60:
             return 0
         # find the timeslot
-        second = (time_num_B - datetime.datetime(1970,1,1)).seconds
+        second = (time_num_B - datetime.datetime(1970, 1, 1)).seconds
         # find the direction
         direction = location_B.getDirection()
         # insert!
@@ -49,22 +60,40 @@ class Map:
                 else:
                     pass
 
-    def estimate(self, second, location_A, location_B, direction):
+    def estimate(self, second, start_id, end_id, direction):
         est = 0
-        difference = abs(location_A - location_B)
+        difference = abs(start_id - end_id)
         if difference > 60:
             difference = abs(64 - difference)
         if direction == 1:
-            location_A -= 1
-        while location_A != location_B:
+            start_id -= 1
+        while start_id != end_id:
             if direction == 1:
-                est += self.school[location_A].count(second, direction)
-                location_A -= 1
-                if location_A < 1:
-                    location_A = 64
+                est += self.school[start_id].count(second, direction)
+                start_id -= 1
+                if start_id < 1:
+                    start_id = 64
             elif direction == 2:
-                est += self.school[location_A].count(second, direction)
-                location_A += 1
-                if location_A > 64:
-                    location_A = 1
+                est += self.school[start_id].count(second, direction)
+                start_id += 1
+                if start_id > 64:
+                    start_id = 1
         return est
+
+    def allEstimate(self, stop_id, locations, second=None):
+        result = {}
+        if second == None:
+            second = datetime.datetime.now(
+            ).hour * 60 * 60 + datetime.datetime.now(
+            ).minute * 60 + datetime.datetime.now().second
+
+        for location in locations:
+            direction = location.getDirection()
+            id = location.getLocationId()
+            if direction == 1 and stop_id > id:
+                break
+            elif direction == 2 and stop_id < id:
+                break
+            duration = self.estimate(second, id, stop_id, direction)
+            result.update({id:duration})
+        return result
