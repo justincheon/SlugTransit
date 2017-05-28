@@ -2,17 +2,6 @@ import timeline
 import bus
 import datetime
 
-stops_1 = [
-    5,
-    9,
-    13,
-    14,
-    18,
-    25,
-    30,
-    33,
-]
-
 
 class Map:
     def __init__(self, mode):
@@ -62,14 +51,12 @@ class Map:
 
     def estimate(self, second, start_id, end_id, direction):
         est = 0
-        difference = abs(start_id - end_id)
-        if difference > 60:
-            difference = abs(64 - difference)
-        if direction == 1:
-            start_id -= 1
+        #difference = abs(start_id - end_id)
+        #if difference > 60:
+            #difference = abs(64 - difference)
         while start_id != end_id:
             if direction == 1:
-                est += self.school[start_id].count(second, direction)
+                est += self.school[start_id - 1].count(second, direction)
                 start_id -= 1
                 if start_id < 1:
                     start_id = 64
@@ -80,20 +67,31 @@ class Map:
                     start_id = 1
         return est
 
-    def allEstimate(self, stop_id, locations, second=None):
+    def allEstimate(self, stop_id, running_buses, second=None):
         result = {}
         if second == None:
             second = datetime.datetime.now(
             ).hour * 60 * 60 + datetime.datetime.now(
             ).minute * 60 + datetime.datetime.now().second
 
-        for location in locations:
+        for location in running_buses:
             direction = location.getDirection()
             id = location.getLocationId()
+            if stop_id == id:
+                result.update({id: -1})
+                continue
             if direction == 1 and stop_id > id:
-                break
+                continue
             elif direction == 2 and stop_id < id:
-                break
+                continue
             duration = self.estimate(second, id, stop_id, direction)
-            result.update({id:duration})
+            result.update({id: duration})
         return result
+
+    def clear(self, mode):
+        self.school = []
+        self.mode = mode
+        for i in range(65):
+            tl = timeline.timeline()
+            tl.setMode(mode)
+            self.school.append(tl)
